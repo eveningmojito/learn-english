@@ -59,7 +59,7 @@ function ChooseTask({ task, onSolved }: { task: Extract<Task, { kind: 'choose' }
           {isGap ? (
             <>
               {before}
-              <span className={`slot word-slot ${solved ? 'filled pop' : ''}`}>{solved ? task.answer : ' '}</span>
+              <span className={`slot word-slot ${solved ? 'filled' : ''}`}>{solved ? task.answer : ' '}</span>
               {after}
             </>
           ) : (
@@ -94,9 +94,10 @@ function SceneView({ story, scene, last, onSolved, onNext }: { story: Story; sce
     return () => clearTimeout(t)
   }, [story, scene, shown])
 
-  // Keep the newest line, exercise or button in view on small screens.
+  // On small screens, scroll only if the newest line, exercise or button is out of view, and
+  // without sliding, so text never moves while the child is reading it.
   useEffect(() => {
-    if (shown > 1 || solved) bottom.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    if (shown > 1 || solved) bottom.current?.scrollIntoView({ behavior: 'instant', block: 'nearest' })
   }, [shown, solved])
 
   function solve(firstTry: boolean) {
@@ -139,7 +140,7 @@ function SceneView({ story, scene, last, onSolved, onNext }: { story: Story; sce
             </div>
           )}
           {solved && (
-            <button className="big next pop" onClick={onNext}>{last ? 'Fine 🏁' : 'Continua ▶'}</button>
+            <button className="big next" onClick={onNext}>{last ? 'Fine 🏁' : 'Continua ▶'}</button>
           )}
         </>
       )}
