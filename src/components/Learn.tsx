@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import type { Category } from '../data/words'
+import type { Topic } from '../data/words'
 import { speak } from '../audio'
 
-type Props = { category: Category; onBack: () => void }
+type Props = { category: Topic; onBack: () => void }
 
 export function Learn({ category, onBack }: Props) {
   const [active, setActive] = useState<string | null>(null)
