@@ -17,7 +17,7 @@ if ('speechSynthesis' in window) {
 
 export function speak(text: string, lang: 'en' | 'it' = 'en') {
   if (!('speechSynthesis' in window)) return
-  window.speechSynthesis.cancel()
+  const synth = window.speechSynthesis
   const u = new SpeechSynthesisUtterance(text)
   if (lang === 'en') {
     u.lang = englishVoice?.lang ?? 'en-GB'
@@ -27,7 +27,13 @@ export function speak(text: string, lang: 'en' | 'it' = 'en') {
   }
   u.rate = 0.8
   u.pitch = 1.1
-  window.speechSynthesis.speak(u)
+  // Chrome sometimes drops an utterance queued right after cancel(), and can get stuck paused,
+  // so give it a moment to settle before speaking.
+  const busy = synth.speaking || synth.pending
+  synth.cancel()
+  synth.resume()
+  if (busy) setTimeout(() => synth.speak(u), 80)
+  else synth.speak(u)
 }
 
 let ctx: AudioContext | null = null

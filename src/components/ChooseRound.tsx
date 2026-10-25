@@ -15,8 +15,8 @@ export function ChooseRound({ target, options, mode, onDone }: Props) {
   const [solved, setSolved] = useState(false)
 
   useEffect(() => {
-    if (mode !== 'listen') return
-    const t = setTimeout(() => speak(target.en), 400)
+    // In translate mode the English word is the answer, so read the Italian word instead.
+    const t = setTimeout(() => (mode === 'translate' ? speak(target.it, 'it') : speak(target.en)), 400)
     return () => clearTimeout(t)
   }, [mode, target])
 

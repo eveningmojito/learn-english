@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { basicTopics, moreTopics, seasonalTopics, type Topic } from './data/words'
 import { Learn } from './components/Learn'
 import { GameFrame } from './components/GameFrame'
@@ -107,11 +107,31 @@ function GameScreen({ topic, game, onBack, onFinish }: { topic: Topic; game: Gam
 }
 
 export default function App() {
-  const [view, setView] = useState<View>({ name: 'home' })
+  // Screens form a stack mirrored in the browser history, so both the ⬅️ buttons and the
+  // browser/phone back button return to the previous screen instead of leaving the app.
+  const [stack, setStack] = useState<View[]>([{ name: 'home' }])
+  const view = stack[stack.length - 1]
   const [level, setLevel] = useState<LevelId>(() => load<LevelId>(LEVEL_KEY, '1'))
   const [best, setBest] = useState<Record<string, number>>(() => load(PROGRESS_KEY, {}))
 
-  const home = () => setView({ name: 'home' })
+  useEffect(() => {
+    history.replaceState({ depth: 0 }, '')
+    const onPop = (e: PopStateEvent) => {
+      const depth = typeof e.state?.depth === 'number' ? e.state.depth : 0
+      setStack((s) => s.slice(0, depth + 1))
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  function setView(next: View) {
+    history.pushState({ depth: stack.length }, '')
+    setStack([...stack, next])
+  }
+
+  const back = () => {
+    if (stack.length > 1) history.back()
+  }
   const levelInfo = LEVELS[level]
 
   function chooseLevel(id: LevelId) {
@@ -129,14 +149,14 @@ export default function App() {
 
   const topicStars = (topic: Topic) => levelInfo.games.reduce((sum, g) => sum + (best[scoreKey(topic, g)] ?? 0), 0)
 
-  if (view.name === 'learn') return <Learn category={view.topic} onBack={() => setView({ name: 'pick', topic: view.topic })} />
+  if (view.name === 'learn') return <Learn category={view.topic} onBack={back} />
   if (view.name === 'game') {
     const { topic, game } = view
     return (
       <GameScreen
         topic={topic}
         game={game}
-        onBack={() => setView({ name: 'pick', topic })}
+        onBack={back}
         onFinish={(s) => saveBest(scoreKey(topic, game), s)}
       />
     )
@@ -147,7 +167,7 @@ export default function App() {
     return (
       <div className="screen">
         <header className="topbar">
-          <button className="round" onClick={home} aria-label="Indietro">⬅️</button>
+          <button className="round" onClick={back} aria-label="Indietro">⬅️</button>
           <h2>{t.emoji} {t.title}</h2>
           <span />
         </header>

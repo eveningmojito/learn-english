@@ -44,10 +44,9 @@ export function BuildRound({ target, kind, onDone }: Props) {
   const solved = typed === answer.length
 
   useEffect(() => {
-    if (isSentence) return
     const t = setTimeout(() => speak(target.en), 400)
     return () => clearTimeout(t)
-  }, [target, isSentence])
+  }, [target])
 
   function tap(tile: Tile) {
     if (solved || used.includes(tile.id)) return
@@ -112,7 +111,7 @@ export function BuildRound({ target, kind, onDone }: Props) {
         ))}
       </div>
       {isSentence && !solved && (
-        <button className="help" onClick={() => speak(target.en)}>🔊 Aiuto</button>
+        <button className="help" onClick={() => speak(target.en)}>🔊 Ascolta di nuovo</button>
       )}
     </div>
   )

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Word } from '../data/words'
 import { playCorrect, playWrong, speak } from '../audio'
 import { shuffle } from '../utils'
@@ -16,6 +16,11 @@ export function MissingLetterRound({ target, onDone }: Props) {
   }, [word])
   const [wrong, setWrong] = useState<string[]>([])
   const [solved, setSolved] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => speak(word), 400)
+    return () => clearTimeout(t)
+  }, [word])
 
   function choose(letter: string) {
     if (solved) return
