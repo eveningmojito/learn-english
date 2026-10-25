@@ -237,7 +237,7 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 .zzz { position: absolute; right: -10%; top: -25%; font-size: 40%; animation: float-up 2.4s ease-in infinite; }
 .twinkle { animation: twinkle 2.8s ease-in-out infinite; }
 .falling { stroke-dasharray: 12 18; animation: falling 0.8s linear infinite; }
-.bubble { animation: float-up 2s ease-in infinite; }
+.potion-bubble { animation: float-up 2s ease-in infinite; }
 .flicker { animation: twinkle 0.6s ease-in-out infinite; }
 @keyframes bob { 50% { translate: 0 -6%; } }
 @keyframes fly { 0%, 100% { translate: 0 0; rotate: -4deg; } 50% { translate: 0 -12%; rotate: 4deg; } }

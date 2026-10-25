@@ -190,7 +190,7 @@ const SCENES: Record<SceneryId, () => React.ReactElement> = {
       <path d="M150 170 Q150 215 200 215 Q250 215 250 170 Z" fill="#2d2a32" />
       <ellipse cx="200" cy="170" rx="50" ry="10" fill="#7bed9f" />
       {[180, 205, 222].map((x, i) => (
-        <circle key={x} cx={x} cy={160 - i * 6} r={5 - i} fill="#7bed9f" className="bubble" style={{ animationDelay: `${i * 0.5}s` }} />
+        <circle key={x} cx={x} cy={160 - i * 6} r={5 - i} fill="#7bed9f" className="potion-bubble" style={{ animationDelay: `${i * 0.5}s` }} />
       ))}
     </>
   ),
