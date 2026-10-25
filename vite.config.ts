@@ -3,7 +3,9 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  // GitHub Pages serves the site under /learn-english/
+  base: command === 'build' ? '/learn-english/' : '/',
   // host: true lets phones on the same Wi-Fi open the dev server
   server: { host: true },
   preview: { host: true },
@@ -23,4 +25,4 @@ export default defineConfig({
       },
     }),
   ],
-})
+}))

@@ -2,7 +2,12 @@
 
 Giochi con audio per imparare l'inglese, pensati per bambini italiani della scuola primaria.
 
-## Avvio
+## Online
+
+Il sito è pubblicato su GitHub Pages: https://eveningmojito.github.io/learn-english/
+Ogni modifica caricata sul ramo `main` viene pubblicata automaticamente.
+
+## Avvio in locale
 
 ```bash
 npm install
