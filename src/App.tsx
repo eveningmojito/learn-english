@@ -7,6 +7,8 @@ import { MissingLetterRound } from './components/MissingLetterRound'
 import { BuildRound } from './components/BuildRound'
 import { MazeGame } from './components/MazeGame'
 import { Adventure } from './components/Adventure'
+import { House } from './components/House'
+import { coinsFor, LEVEL_MULTIPLIER, loadWallet, saveWallet, type Wallet } from './rewards'
 import { stories, type Story } from './data/stories'
 import { GAMES, LETTER_GAMES, LEVELS, type Extra, type GameId, type LevelId } from './data/levels'
 import { speak } from './audio'
@@ -19,6 +21,7 @@ type View =
   | { name: 'game'; topic: Topic; game: GameId }
   | { name: 'maze' }
   | { name: 'story'; story: Story }
+  | { name: 'house' }
 
 const PROGRESS_KEY = 'learn-english-progress'
 const LEVEL_KEY = 'learn-english-level'
@@ -36,10 +39,10 @@ function makeRounds(topic: Topic, game: GameId) {
   }))
 }
 
-function GameScreen({ topic, game, onBack, onFinish }: { topic: Topic; game: GameId; onBack: () => void; onFinish: (stars: number) => void }) {
+function GameScreen({ topic, game, multiplier, onBack, onFinish }: { topic: Topic; game: GameId; multiplier: number; onBack: () => void; onFinish: (stars: number) => void }) {
   const rounds = useMemo(() => makeRounds(topic, game), [topic, game])
   return (
-    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish}>
+    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish} multiplier={multiplier}>
       {(i, done) => {
         const { target, options } = rounds[i]
         if (game === 'spell' || game === 'dictation' || game === 'sentence')
@@ -58,6 +61,12 @@ export default function App() {
   const view = stack[stack.length - 1]
   const [level, setLevel] = useState<LevelId>(() => load<LevelId>(LEVEL_KEY, '1'))
   const [best, setBest] = useState<Record<string, number>>(() => load(PROGRESS_KEY, {}))
+  const [wallet, setWallet] = useState<Wallet>(loadWallet)
+
+  function changeWallet(next: Wallet) {
+    setWallet(next)
+    saveWallet(next)
+  }
 
   useEffect(() => {
     history.replaceState({ depth: 0 }, '')
@@ -84,7 +93,10 @@ export default function App() {
     save(LEVEL_KEY, id)
   }
 
-  function saveBest(key: string, stars: number) {
+  // Records the best score and pays coins: higher levels pay more per star.
+  function finishGame(key: string, stars: number, multiplier: number) {
+    const coins = coinsFor(stars, multiplier)
+    changeWallet({ ...wallet, coins: wallet.coins + coins, earned: wallet.earned + coins, games: wallet.games + 1, stars: wallet.stars + stars })
     setBest((prev) => {
       const next = { ...prev, [key]: Math.max(prev[key] ?? 0, stars) }
       save(PROGRESS_KEY, next)
@@ -101,10 +113,11 @@ export default function App() {
 
   const topicStars = (topic: Topic) => levelInfo.games.reduce((sum, g) => sum + (best[scoreKey(topic, g)] ?? 0), 0)
 
-  if (view.name === 'maze') return <MazeGame onBack={back} onFinish={(s) => saveBest('game:maze', s)} />
+  if (view.name === 'house') return <House wallet={wallet} onWallet={changeWallet} onBack={back} />
+  if (view.name === 'maze') return <MazeGame onBack={back} onFinish={(s) => finishGame('game:maze', s, LEVEL_MULTIPLIER['2'])} />
   if (view.name === 'story') {
     const { story } = view
-    return <Adventure story={story} onBack={back} onFinish={(s) => saveBest(`game:story:${story.id}`, s)} />
+    return <Adventure story={story} onBack={back} onFinish={(s) => finishGame(`game:story:${story.id}`, s, LEVEL_MULTIPLIER['3'])} />
   }
   if (view.name === 'learn') return <Learn category={view.topic} onBack={back} />
   if (view.name === 'game') {
@@ -114,7 +127,8 @@ export default function App() {
         topic={topic}
         game={game}
         onBack={back}
-        onFinish={(s) => saveBest(scoreKey(topic, game), s)}
+        multiplier={LEVEL_MULTIPLIER[level]}
+        onFinish={(s) => finishGame(scoreKey(topic, game), s, LEVEL_MULTIPLIER[level])}
       />
     )
   }
@@ -152,6 +166,14 @@ export default function App() {
       <h1 className="title" onClick={() => speak("Let's learn English!")}>
         🎈 Let's learn English!
       </h1>
+      <button className="house-button" onClick={() => setView({ name: 'house' })}>
+        <span className="house-button-emoji">🏠</span>
+        <span>
+          <span className="house-button-title">La mia casa</span>
+          <span className="house-button-sub">Gioca, guadagna monete e costruisci!</span>
+        </span>
+        <span className="coins">🪙 {wallet.coins}</span>
+      </button>
       <div className="levels" role="radiogroup" aria-label="Livello">
         {(Object.keys(LEVELS) as LevelId[]).map((id) => (
           <button

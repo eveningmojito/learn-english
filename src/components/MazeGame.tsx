@@ -3,6 +3,7 @@ import { basicTopics, type Word } from '../data/words'
 import { playCorrect, playWrong, speak } from '../audio'
 import { shuffle } from '../utils'
 import { GameFrame } from './GameFrame'
+import { LEVEL_MULTIPLIER } from '../rewards'
 
 // A character walks on a grid. In "follow" rounds the child hears directions in English
 // ("Go right two steps!") and presses the matching arrows; in "find" rounds they hear
@@ -279,7 +280,7 @@ function MazeRound({ round, onDone }: { round: Round; onDone: (firstTry: boolean
 export function MazeGame({ onBack, onFinish }: { onBack: () => void; onFinish: (stars: number) => void }) {
   const rounds = useMemo(() => makeRounds(), [])
   return (
-    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish}>
+    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish} multiplier={LEVEL_MULTIPLIER['2']}>
       {(i, done) => <MazeRound round={rounds[i]} onDone={done} />}
     </GameFrame>
   )

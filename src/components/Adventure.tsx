@@ -4,6 +4,7 @@ import { playCorrect, playFanfare, playWrong, speak } from '../audio'
 import { shuffle } from '../utils'
 import { Scenery } from './Scenery'
 import { BuildRound } from './BuildRound'
+import { coinsFor, LEVEL_MULTIPLIER } from '../rewards'
 
 type Props = { story: Story; onBack: () => void; onFinish: (stars: number) => void }
 
@@ -173,6 +174,7 @@ export function Adventure({ story, onBack, onFinish }: Props) {
         <h2>The end! Fantastico!</h2>
         <p className="stars">{'⭐'.repeat(stars)}{'☆'.repeat(total - stars)}</p>
         <p className="hint">Hai risolto {stars} prove su {total} al primo colpo!</p>
+        <p className="earned">+{coinsFor(stars, LEVEL_MULTIPLIER['3'])} 🪙</p>
         <button className="big" onClick={onBack}>🏠 Torna al menu</button>
       </div>
     )

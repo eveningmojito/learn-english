@@ -275,3 +275,75 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 .task-options { display: flex; flex-direction: column; gap: 10px; width: 100%; }
 .option { padding: 14px 12px; }
 .option .en { font-size: clamp(1.15rem, 4.8vw, 1.5rem); }
+
+/* Coins and the house (rewards) */
+.coins { font-size: 1.2rem; font-weight: 700; background: #fff3c4; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+.earned { font-size: 2rem; font-weight: 700; margin: 0; color: #e1a325; }
+.house-button {
+  display: flex; align-items: center; gap: 12px; width: min(640px, 100%); margin: 0 auto;
+  background: #ff9f43; color: #fff; border-radius: 22px; padding: 10px 16px; box-shadow: var(--shadow); text-align: left;
+}
+.house-button > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; }
+.house-button .coins { color: var(--text); }
+.house-button-emoji { font-size: 2.6rem; line-height: 1; }
+.house-button-title { font-size: 1.4rem; font-weight: 700; }
+.house-button-sub { font-size: 0.95rem; opacity: 0.95; }
+
+.house-screen { gap: 10px; padding-bottom: 32px; }
+.house-screen .topbar { grid-template-columns: 56px 1fr auto; }
+.mission { display: flex; align-items: center; gap: 8px; max-width: 640px; width: 100%; margin: 0 auto; }
+.mission-who { font-size: 2.4rem; line-height: 1; }
+.mission-text {
+  flex: 1; background: var(--card); border-radius: 18px; padding: 8px 14px; box-shadow: var(--shadow);
+  text-align: left; font-size: clamp(1.05rem, 4.4vw, 1.3rem); font-weight: 700; display: flex; flex-direction: column;
+}
+.mission-side { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.mission-reward { font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+
+.house { width: min(560px, 100%); margin: 0 auto; container-type: inline-size; display: flex; flex-direction: column; align-items: center; }
+.roof {
+  width: 108%; height: calc(100cqw / var(--w) * 0.7); max-height: 120px;
+  background: #d35454; clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.floor { display: grid; grid-template-columns: repeat(var(--w), minmax(0, 1fr)); width: 100%; border-left: 6px solid #8b5a2b; border-right: 6px solid #8b5a2b; border-bottom: 6px solid #8b5a2b; }
+.sq { min-width: 0; overflow: hidden;
+  position: relative; aspect-ratio: 1 / 0.9; border-radius: 0; padding: 0; background: #f6efe2;
+  display: flex; align-items: flex-end; justify-content: center; outline-offset: -4px;
+}
+.sq.empty { background: repeating-linear-gradient(45deg, #f6efe2 0 10px, #efe5d3 10px 20px); }
+.sq.wall { border-left: 3px solid #8b5a2b; }
+.sq.wall:first-child { border-left: none; }
+.sq.selected { outline: 4px solid #ffd32a; z-index: 1; }
+.sq-label {
+  position: absolute; top: 3px; left: 4px; font-size: clamp(0.65rem, calc(100cqw / var(--w) * 0.11), 0.95rem);
+  font-weight: 700; color: #5b5470; white-space: nowrap;
+}
+.sq-items { display: flex; justify-content: center; font-size: calc(100cqw / var(--w) * 0.26); line-height: 1.2; padding-bottom: 4px; }
+.grass { width: 112%; height: 16px; background: #5fbf55; border-radius: 0 0 12px 12px; }
+
+.selected-info { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; font-weight: 700; }
+.owned { display: inline-flex; background: var(--card); border-radius: 999px; box-shadow: var(--shadow); overflow: hidden; }
+.owned button { background: none; padding: 4px 10px; font-size: 1rem; }
+.owned .sell { color: #d63031; padding-left: 4px; }
+.note { margin: 0; text-align: center; font-weight: 700; color: #6c5ce7; }
+
+.tabs { display: flex; gap: 6px; overflow-x: auto; max-width: 640px; width: 100%; margin: 0 auto; padding-bottom: 6px; }
+.tabs button { background: var(--card); border-radius: 999px; padding: 6px 14px; font-weight: 700; white-space: nowrap; box-shadow: 0 3px 0 rgba(0,0,0,.1); }
+.tabs button.on { background: #ffd32a; }
+.shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 10px; max-width: 640px; width: 100%; margin: 0 auto; }
+.shop-card { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 8px 4px; display: flex; flex-direction: column; align-items: center; }
+.shop-card.poor { opacity: 0.5; }
+.shop-emoji { font-size: 2.4rem; line-height: 1.2; }
+.price { font-size: 0.95rem; font-weight: 700; }
+.build-card {
+  grid-column: 1 / -1; background: var(--card); border-radius: 18px; box-shadow: var(--shadow);
+  padding: 12px; font-size: 1.3rem; font-weight: 700; display: flex; flex-direction: column; align-items: center;
+}
+.build-card:disabled { opacity: 0.5; }
+.build-card .hint { font-size: 1rem; }
+.stats { text-align: center; color: var(--muted); margin: 0; font-size: 0.95rem; }
+
+.overlay { position: fixed; inset: 0; background: rgba(45, 42, 50, 0.45); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+.quiz { background: var(--bg); border-radius: 24px; padding: 18px; width: min(420px, 100%); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.quiz-emoji { font-size: 5rem; line-height: 1.1; }
+.quiz-q { margin: 0; font-size: 1.5rem; font-weight: 700; }

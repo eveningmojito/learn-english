@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useState, type ReactNode } from 'react'
 import { playFanfare } from '../audio'
+import { coinsFor } from '../rewards'
 
 type Props = {
   total: number
@@ -7,11 +8,13 @@ type Props = {
   onFinish: (stars: number) => void
   // How long to wait after a solved round before the next one, so the praise can be heard.
   delay?: number
+  // Coins per star for this game's level, shown on the final screen.
+  multiplier: number
   // Renders one round; call done(firstTry) when the child finds the answer.
   children: (round: number, done: (firstTry: boolean) => void) => ReactNode
 }
 
-export function GameFrame({ total, onBack, onFinish, delay = 1800, children }: Props) {
+export function GameFrame({ total, onBack, onFinish, delay = 1800, multiplier, children }: Props) {
   const [index, setIndex] = useState(0)
   const [stars, setStars] = useState(0)
   const finished = index >= total
@@ -42,6 +45,7 @@ export function GameFrame({ total, onBack, onFinish, delay = 1800, children }: P
         <h2>Bravissimo!</h2>
         <p className="stars">{'⭐'.repeat(stars)}{'☆'.repeat(total - stars)}</p>
         <p className="hint">Hai indovinato {stars} su {total} al primo colpo!</p>
+        <p className="earned">+{coinsFor(stars, multiplier)} 🪙</p>
         <button className="big" onClick={onBack}>🏠 Torna al menu</button>
       </div>
     )
