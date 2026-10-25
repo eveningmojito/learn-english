@@ -5,8 +5,8 @@ import { playCorrect, playWrong, speak } from '../audio'
 type Props = {
   target: Word
   options: Word[]
-  // listen: hear the word; read: see the word written
-  mode: 'listen' | 'read'
+  // listen: hear the word; read: see the word written; translate: pick the English for an Italian word
+  mode: 'listen' | 'read' | 'translate'
   onDone: (firstTry: boolean) => void
 }
 
@@ -44,27 +44,33 @@ export function ChooseRound({ target, options, mode, onDone }: Props) {
             <p className="hint">Ascolta e tocca l'immagine giusta!</p>
             <p className="answer">{solved ? `${target.en} = ${target.it}` : ' '}</p>
           </>
-        ) : (
+        ) : mode === 'read' ? (
           <>
             <p className="hint">Leggi e tocca l'immagine giusta!</p>
             <p className="word">{target.en}</p>
             <p className="answer">{solved ? `= ${target.it}` : ' '}</p>
           </>
+        ) : (
+          <>
+            <p className="hint">Come si dice in inglese?</p>
+            <p className="word">{target.it}</p>
+            <p className="answer">{solved ? target.emoji : ' '}</p>
+          </>
         )}
       </div>
 
-      <div className="grid choices">
+      <div className={`grid choices ${mode === 'translate' ? 'text-choices' : ''}`}>
         {options.map((w) => {
           const isWrong = wrong.includes(w.en)
           const isRight = solved && w === target
           return (
             <button
               key={w.en}
-              className={`card big-card ${isWrong ? 'shake faded' : ''} ${isRight ? 'pop right' : ''}`}
+              className={`card ${mode === 'translate' ? 'text-card' : 'big-card'} ${isWrong ? 'shake faded' : ''} ${isRight ? 'pop right' : ''}`}
               onClick={() => choose(w)}
               disabled={isWrong}
             >
-              <span className="emoji">{w.emoji}</span>
+              {mode === 'translate' ? <span className="en">{w.en}</span> : <span className="emoji">{w.emoji}</span>}
             </button>
           )
         })}

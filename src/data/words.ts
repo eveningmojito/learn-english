@@ -10,6 +10,8 @@ export type Topic = {
   emoji: string
   color: string
   words: Word[]
+  // Short sentences for the sentence-building game (level 5-6).
+  sentences?: Word[]
 }
 
 const animals: Topic = {

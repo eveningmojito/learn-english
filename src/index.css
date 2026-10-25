@@ -131,7 +131,7 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 
 /* Level picker and sections */
-.levels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 560px; width: 100%; margin: 0 auto; }
+.levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 640px; width: 100%; margin: 0 auto; }
 .level {
   background: var(--card); border-radius: 22px; padding: 10px 8px;
   box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;
@@ -139,8 +139,8 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 }
 .level.on { border-color: #ffd32a; background: #fff3c4; opacity: 1; }
 .level-emoji { font-size: 2.2rem; line-height: 1.1; }
-.level-label { font-size: 1.3rem; font-weight: 700; }
-.level-sub { font-size: 0.95rem; color: var(--muted); }
+.level-label { font-size: clamp(1rem, 4vw, 1.3rem); white-space: nowrap; font-weight: 700; }
+.level-sub { font-size: clamp(0.75rem, 3vw, 0.95rem); text-align: center; line-height: 1.2; color: var(--muted); }
 .section { display: flex; flex-direction: column; gap: 10px; }
 .section-title { margin: 8px 0 0; font-size: 1.5rem; }
 
@@ -176,3 +176,17 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 .categories .category { padding: 14px 6px; border-radius: 22px; }
 .categories .emoji { font-size: clamp(2.6rem, 10vw, 4rem); }
 .categories .label { font-size: clamp(1rem, 4vw, 1.4rem); line-height: 1.15; text-align: center; }
+
+/* Level 5-6 games */
+.text-choices .text-card { padding: 22px 8px; justify-content: center; }
+.text-card .en { font-size: clamp(1.4rem, 6vw, 2rem); }
+.sentence { display: flex; flex-wrap: wrap; gap: 8px 10px; justify-content: center; margin: 0; font-size: clamp(1.4rem, 6vw, 2rem); font-weight: 700; max-width: 640px; }
+.word-slot { min-width: 2.2em; }
+.sentence-it { font-style: italic; text-align: center; }
+.tile.word-tile { width: auto; min-width: 64px; padding: 0 16px; font-size: clamp(1.3rem, 5vw, 1.8rem); }
+.help { background: var(--card); box-shadow: var(--shadow); border-radius: 999px; padding: 8px 20px; font-size: 1.2rem; margin-top: 8px; }
+.sentence-list { display: flex; flex-direction: column; gap: 12px; }
+.sentence-card { flex-direction: row; gap: 14px; padding: 12px 16px; text-align: left; }
+.sentence-card .en, .sentence-card .it { display: block; }
+.sentence-card .en { font-size: 1.3rem; }
+.sentence-emoji { font-size: 2.6rem; }

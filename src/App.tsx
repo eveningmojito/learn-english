@@ -1,22 +1,29 @@
 import { useMemo, useState } from 'react'
-import { basicTopics, moreTopics, seasonalTopics, type Topic, type Word } from './data/words'
+import { basicTopics, moreTopics, seasonalTopics, type Topic } from './data/words'
 import { Learn } from './components/Learn'
 import { GameFrame } from './components/GameFrame'
 import { ChooseRound } from './components/ChooseRound'
 import { MissingLetterRound } from './components/MissingLetterRound'
-import { SpellRound } from './components/SpellRound'
+import { BuildRound } from './components/BuildRound'
+import { advancedTopics } from './data/advanced'
 import { speak } from './audio'
 import { shuffle } from './utils'
 
-type GameId = 'listen' | 'read' | 'missing' | 'spell'
-type LevelId = '1' | '2'
+type GameId = 'listen' | 'read' | 'missing' | 'spell' | 'translate' | 'dictation' | 'sentence'
+type LevelId = '1' | '2' | '3'
 
 const GAMES: Record<GameId, { title: string; emoji: string; color: string; rounds: number }> = {
   listen: { title: 'Ascolta e tocca', emoji: '🎧', color: '#2ecc71', rounds: 8 },
   read: { title: 'Leggi e scegli', emoji: '👀', color: '#2ecc71', rounds: 8 },
   missing: { title: 'Lettera mancante', emoji: '🔤', color: '#f39c12', rounds: 8 },
   spell: { title: 'Scrivi la parola', emoji: '✍️', color: '#e84393', rounds: 6 },
+  translate: { title: 'Traduci', emoji: '🔁', color: '#2ecc71', rounds: 8 },
+  dictation: { title: 'Dettato', emoji: '👂', color: '#f39c12', rounds: 6 },
+  sentence: { title: 'Costruisci la frase', emoji: '🧩', color: '#e84393', rounds: 6 },
 }
+
+// Games where the child types the English word letter by letter need plain single words.
+const LETTER_GAMES: GameId[] = ['missing', 'spell', 'dictation']
 
 const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; sections: { title: string; topics: Topic[] }[]; games: GameId[] }> = {
   '1': {
@@ -30,11 +37,18 @@ const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; secti
     games: ['listen'],
   },
   '2': {
-    label: 'Livello 2–3',
+    label: 'Livello 3–4',
     sub: 'Lettura e spelling',
     emoji: '📚',
     sections: [{ title: 'Argomenti', topics: [...basicTopics, ...moreTopics] }],
     games: ['read', 'missing', 'spell'],
+  },
+  '3': {
+    label: 'Livello 5–6',
+    sub: 'Dettato e frasi',
+    emoji: '🚀',
+    sections: [{ title: 'Argomenti', topics: advancedTopics }],
+    games: ['translate', 'dictation', 'sentence'],
   },
 }
 
@@ -66,9 +80,10 @@ function save(key: string, value: unknown) {
 
 const scoreKey = (topic: Topic, game: GameId) => `${topic.id}:${game}`
 
-function makeRounds(words: Word[], game: GameId) {
-  // Spelling games need plain single words.
-  const pool = game === 'missing' || game === 'spell' ? words.filter((w) => /^[a-z]+$/.test(w.en)) : words
+function makeRounds(topic: Topic, game: GameId) {
+  const words = topic.words
+  const pool =
+    game === 'sentence' ? (topic.sentences ?? []) : LETTER_GAMES.includes(game) ? words.filter((w) => /^[a-z]+$/.test(w.en)) : words
   const targets = shuffle(pool).slice(0, Math.min(GAMES[game].rounds, pool.length))
   return targets.map((target) => ({
     target,
@@ -77,12 +92,13 @@ function makeRounds(words: Word[], game: GameId) {
 }
 
 function GameScreen({ topic, game, onBack, onFinish }: { topic: Topic; game: GameId; onBack: () => void; onFinish: (stars: number) => void }) {
-  const rounds = useMemo(() => makeRounds(topic.words, game), [topic, game])
+  const rounds = useMemo(() => makeRounds(topic, game), [topic, game])
   return (
     <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish}>
       {(i, done) => {
         const { target, options } = rounds[i]
-        if (game === 'spell') return <SpellRound target={target} onDone={done} />
+        if (game === 'spell' || game === 'dictation' || game === 'sentence')
+          return <BuildRound target={target} kind={game} onDone={done} />
         if (game === 'missing') return <MissingLetterRound target={target} onDone={done} />
         return <ChooseRound target={target} options={options} mode={game} onDone={done} />
       }}

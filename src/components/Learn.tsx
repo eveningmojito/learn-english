@@ -32,6 +32,22 @@ export function Learn({ category, onBack }: Props) {
           </button>
         ))}
       </div>
+      {category.sentences && (
+        <>
+          <h3 className="section-title">Frasi</h3>
+          <div className="sentence-list">
+            {category.sentences.map((s) => (
+              <button key={s.en} className="card sentence-card" onClick={() => speak(s.en)}>
+                <span className="sentence-emoji">{s.emoji}</span>
+                <span>
+                  <span className="en">{s.en}</span>
+                  <span className="it">{s.it}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
