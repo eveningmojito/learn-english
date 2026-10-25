@@ -190,3 +190,35 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 .sentence-card .en, .sentence-card .it { display: block; }
 .sentence-card .en { font-size: 1.3rem; }
 .sentence-emoji { font-size: 2.6rem; }
+
+/* Walking game (level 3-4) */
+.maze { gap: 6px; }
+.command {
+  background: #ffd32a; box-shadow: var(--shadow); border-radius: 999px;
+  padding: 10px 22px; font-size: clamp(1.3rem, 5.5vw, 1.9rem); font-weight: 700;
+}
+.board {
+  position: relative; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr);
+  width: min(400px, 92vw, 48dvh); aspect-ratio: 1; border-radius: 20px; overflow: hidden;
+  box-shadow: var(--shadow); background: #a8e6a1;
+}
+.cell { min-height: 0; line-height: 1; display: flex; align-items: center; justify-content: center; font-size: clamp(1.8rem, 9vw, 3rem); background: #b8f0b0; }
+.cell.alt { background: #a3e39b; }
+.piece {
+  position: absolute; left: 0; top: 0; width: 20%; height: 20%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.8rem, 9vw, 3rem); transition: transform 0.25s ease; pointer-events: none;
+}
+.piece > span { display: inline-block; }
+.piece.hero { z-index: 2; filter: drop-shadow(0 3px 0 rgba(0,0,0,.2)); }
+.hop { animation: hop 0.25s ease; }
+@keyframes hop { 50% { transform: translateY(-18%); } }
+.pad {
+  display: grid; grid-template-columns: repeat(3, 68px); grid-template-rows: repeat(3, 58px);
+  grid-template-areas: ". up ." "left . right" ". down ."; gap: 4px; margin-top: 4px;
+}
+.tile.arrow { width: 68px; height: 58px; font-size: 2rem; background: #54a0ff; }
+.arrow.up { grid-area: up; }
+.arrow.down { grid-area: down; }
+.arrow.left { grid-area: left; }
+.arrow.right { grid-area: right; }

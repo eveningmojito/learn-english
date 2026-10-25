@@ -5,6 +5,7 @@ import { GameFrame } from './components/GameFrame'
 import { ChooseRound } from './components/ChooseRound'
 import { MissingLetterRound } from './components/MissingLetterRound'
 import { BuildRound } from './components/BuildRound'
+import { MazeGame } from './components/MazeGame'
 import { advancedTopics } from './data/advanced'
 import { speak } from './audio'
 import { shuffle } from './utils'
@@ -25,7 +26,12 @@ const GAMES: Record<GameId, { title: string; emoji: string; color: string; round
 // Games where the child types the English word letter by letter need plain single words.
 const LETTER_GAMES: GameId[] = ['missing', 'spell', 'dictation']
 
-const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; sections: { title: string; topics: Topic[] }[]; games: GameId[] }> = {
+// Stand-alone games and stories shown in their own section of a level.
+type Extra = { id: string; title: string; emoji: string; color: string }
+
+const MAZE: Extra = { id: 'maze', title: 'Segui le indicazioni', emoji: '🐰', color: '#10ac84' }
+
+const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; sections: { title: string; topics: Topic[] }[]; games: GameId[]; extras?: { title: string; items: Extra[] } }> = {
   '1': {
     label: 'Livello 1–2',
     sub: 'Ascolto e figure',
@@ -42,6 +48,7 @@ const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; secti
     emoji: '📚',
     sections: [{ title: 'Argomenti', topics: [...basicTopics, ...moreTopics] }],
     games: ['read', 'missing', 'spell'],
+    extras: { title: 'Giochi', items: [MAZE] },
   },
   '3': {
     label: 'Livello 5–6',
@@ -57,6 +64,7 @@ type View =
   | { name: 'pick'; topic: Topic }
   | { name: 'learn'; topic: Topic }
   | { name: 'game'; topic: Topic; game: GameId }
+  | { name: 'maze' }
 
 const PROGRESS_KEY = 'learn-english-progress'
 const LEVEL_KEY = 'learn-english-level'
@@ -147,8 +155,14 @@ export default function App() {
     })
   }
 
+  const extraKey = (x: Extra) => `game:${x.id}`
+  function openExtra(x: Extra) {
+    if (x.id === 'maze') setView({ name: 'maze' })
+  }
+
   const topicStars = (topic: Topic) => levelInfo.games.reduce((sum, g) => sum + (best[scoreKey(topic, g)] ?? 0), 0)
 
+  if (view.name === 'maze') return <MazeGame onBack={back} onFinish={(s) => saveBest('game:maze', s)} />
   if (view.name === 'learn') return <Learn category={view.topic} onBack={back} />
   if (view.name === 'game') {
     const { topic, game } = view
@@ -210,6 +224,23 @@ export default function App() {
           </button>
         ))}
       </div>
+      {levelInfo.extras && (
+        <section className="section">
+          <h3 className="section-title">{levelInfo.extras.title}</h3>
+          <div className="grid categories extras">
+            {levelInfo.extras.items.map((x) => {
+              const stars = best[extraKey(x)]
+              return (
+                <button key={x.id} className="category" style={{ background: x.color }} onClick={() => openExtra(x)}>
+                  <span className="emoji">{x.emoji}</span>
+                  <span className="label">{x.title}</span>
+                  <span className="best">{stars ? `⭐ ${stars}` : ' '}</span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      )}
       {levelInfo.sections.map((section) => (
         <section key={section.title} className="section">
           <h3 className="section-title">{section.title}</h3>
