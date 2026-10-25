@@ -15,7 +15,7 @@ if ('speechSynthesis' in window) {
   window.speechSynthesis.onvoiceschanged = pickVoice
 }
 
-export function speak(text: string, lang: 'en' | 'it' = 'en') {
+export function speak(text: string, lang: 'en' | 'it' = 'en', pitch = 1.1) {
   if (!('speechSynthesis' in window)) return
   const synth = window.speechSynthesis
   const u = new SpeechSynthesisUtterance(text)
@@ -26,7 +26,7 @@ export function speak(text: string, lang: 'en' | 'it' = 'en') {
     u.lang = 'it-IT'
   }
   u.rate = 0.8
-  u.pitch = 1.1
+  u.pitch = pitch
   // Chrome sometimes drops an utterance queued right after cancel(), and can get stuck paused,
   // so give it a moment to settle before speaking.
   const busy = synth.speaking || synth.pending
