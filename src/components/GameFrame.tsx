@@ -25,7 +25,14 @@ export function GameFrame({ total, onBack, onFinish, delay = 1800, children }: P
 
   const done = useCallback((firstTry: boolean) => {
     if (firstTry) setStars((s) => s + 1)
-    setTimeout(() => setIndex((i) => i + 1), delay)
+    // Move on only once the spoken answer has finished, so it is never cut off.
+    const started = Date.now()
+    const next = () => {
+      const talking = window.speechSynthesis?.speaking || window.speechSynthesis?.pending
+      if (talking && Date.now() - started < 12000) setTimeout(next, 200)
+      else setTimeout(() => setIndex((i) => i + 1), 400)
+    }
+    setTimeout(next, delay)
   }, [delay])
 
   if (finished) {

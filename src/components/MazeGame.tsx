@@ -279,7 +279,7 @@ function MazeRound({ round, onDone }: { round: Round; onDone: (firstTry: boolean
 export function MazeGame({ onBack, onFinish }: { onBack: () => void; onFinish: (stars: number) => void }) {
   const rounds = useMemo(() => makeRounds(), [])
   return (
-    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish} delay={3200}>
+    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish}>
       {(i, done) => <MazeRound round={rounds[i]} onDone={done} />}
     </GameFrame>
   )
