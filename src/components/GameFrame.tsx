@@ -5,11 +5,13 @@ type Props = {
   total: number
   onBack: () => void
   onFinish: (stars: number) => void
+  // How long to wait after a solved round before the next one, so the praise can be heard.
+  delay?: number
   // Renders one round; call done(firstTry) when the child finds the answer.
   children: (round: number, done: (firstTry: boolean) => void) => ReactNode
 }
 
-export function GameFrame({ total, onBack, onFinish, children }: Props) {
+export function GameFrame({ total, onBack, onFinish, delay = 1800, children }: Props) {
   const [index, setIndex] = useState(0)
   const [stars, setStars] = useState(0)
   const finished = index >= total
@@ -23,8 +25,8 @@ export function GameFrame({ total, onBack, onFinish, children }: Props) {
 
   const done = useCallback((firstTry: boolean) => {
     if (firstTry) setStars((s) => s + 1)
-    setTimeout(() => setIndex((i) => i + 1), 1800)
-  }, [])
+    setTimeout(() => setIndex((i) => i + 1), delay)
+  }, [delay])
 
   if (finished) {
     return (

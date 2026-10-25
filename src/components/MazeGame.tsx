@@ -13,7 +13,7 @@ const ROUNDS = 6
 
 type Dir = 'up' | 'down' | 'left' | 'right'
 type Pos = { r: number; c: number }
-type Command = { dir: Dir; n: number }
+type Command = { dir: Dir; n: number; verb: string }
 
 const STEP: Record<Dir, Pos> = { up: { r: -1, c: 0 }, down: { r: 1, c: 0 }, left: { r: 0, c: -1 }, right: { r: 0, c: 1 } }
 const DIR_IT: Record<Dir, string> = { up: 'su', down: 'giù', left: 'a sinistra', right: 'a destra' }
@@ -45,7 +45,12 @@ const inside = (p: Pos) => p.r >= 0 && p.r < SIZE && p.c >= 0 && p.c < SIZE
 const rand = (n: number) => Math.floor(Math.random() * n)
 const randPos = (): Pos => ({ r: rand(SIZE), c: rand(SIZE) })
 
-const commandText = ({ dir, n }: Command) => `Go ${dir} ${NUMBERS[n]} ${n === 1 ? 'step' : 'steps'}!`
+// Varied wording so the directions don't sound the same every time.
+const FIRST_VERBS = ['Go', 'Move', 'Walk']
+const NEXT_VERBS = ['Now go', 'Then walk', 'Now move', 'Go']
+const pick = <T,>(list: T[]) => list[rand(list.length)]
+
+const commandText = ({ dir, n, verb }: Command) => `${verb} ${dir} ${NUMBERS[n]} ${n === 1 ? 'step' : 'steps'}!`
 const commandIt = ({ dir, n }: Command) => `Vai ${DIR_IT[dir]} di ${n} ${n === 1 ? 'passo' : 'passi'}`
 
 // Shortest paths from start, as the list of directions to reach each cell.
@@ -69,7 +74,7 @@ function toCommands(dirs: Dir[]): Command[] {
   for (const dir of dirs) {
     const last = out[out.length - 1]
     if (last && last.dir === dir) last.n++
-    else out.push({ dir, n: 1 })
+    else out.push({ dir, n: 1, verb: pick(out.length ? NEXT_VERBS : FIRST_VERBS) })
   }
   return out
 }
@@ -200,7 +205,7 @@ function MazeRound({ round, onDone }: { round: Round; onDone: (firstTry: boolean
         setCmd(cmd + 1)
         setStepsLeft(round.commands[cmd + 1].n)
       } else {
-        finish(`Well done! You found the ${round.name}!`)
+        finish(pick([`Well done! You found the ${round.name}!`, `Yummy! A ${round.name}!`, `Great job! Here is the ${round.name}!`]))
       }
       return
     }
@@ -210,7 +215,7 @@ function MazeRound({ round, onDone }: { round: Round; onDone: (firstTry: boolean
     setAt(next)
     const item = round.items.find((it) => key(it.pos) === key(next))
     if (!item) return
-    if (item.word === round.target) return finish(`Yes! This is the ${item.word.en}!`)
+    if (item.word === round.target) return finish(pick([`Yes! This is the ${item.word.en}!`, `Great! You found the ${item.word.en}!`, `Well done! The ${item.word.en}!`]))
     playWrong()
     setMistakes((m) => m + 1)
     setWrongItem(key(next))
@@ -241,16 +246,27 @@ function MazeRound({ round, onDone }: { round: Round; onDone: (firstTry: boolean
 
   return (
     <div className="question maze">
-      <p className="hint">{round.kind === 'follow' ? 'Ascolta e segui le indicazioni!' : 'Ascolta e cammina fino alla cosa giusta!'}</p>
+      <p className="hint">
+        Tu sei <span className="you">{round.hero}</span> {round.kind === 'follow' ? 'Segui le indicazioni!' : 'Vai alla cosa giusta!'}
+      </p>
       <button className="command" onClick={say} aria-label="Ascolta di nuovo">
         🔊 {solved ? '🎉' : prompt}
       </button>
-      <p className="answer small">
-        {round.kind === 'follow' && !solved && mistakes >= 2 ? commandIt(round.commands[cmd]) : round.kind === 'follow' ? `${Math.min(cmd + 1, round.commands.length)} / ${round.commands.length}` : ' '}
+      <p className="cue">
+        {round.kind === 'follow' && !solved ? (
+          <>
+            {Array.from({ length: round.commands[cmd].n }, (_, i) => (
+              <span key={i} className={i < round.commands[cmd].n - stepsLeft ? 'cue-done' : ''}>{ARROW[round.commands[cmd].dir]}</span>
+            ))}
+            {mistakes >= 2 && <span className="cue-it">{commandIt(round.commands[cmd])}</span>}
+          </>
+        ) : (
+          ' '
+        )}
       </p>
       <Board hero={round.hero} at={at} blocks={round.blocks} items={items} shake={shake} />
       <div className="pad">
-        {(['up', 'left', 'right', 'down'] as Dir[]).map((d) => (
+        {(['up', 'left', 'down', 'right'] as Dir[]).map((d) => (
           <button key={d} className={`tile arrow ${d}`} onClick={() => move(d)} aria-label={d}>
             {ARROW[d]}
           </button>
@@ -263,7 +279,7 @@ function MazeRound({ round, onDone }: { round: Round; onDone: (firstTry: boolean
 export function MazeGame({ onBack, onFinish }: { onBack: () => void; onFinish: (stars: number) => void }) {
   const rounds = useMemo(() => makeRounds(), [])
   return (
-    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish}>
+    <GameFrame total={rounds.length} onBack={onBack} onFinish={onFinish} delay={3200}>
       {(i, done) => <MazeRound round={rounds[i]} onDone={done} />}
     </GameFrame>
   )
