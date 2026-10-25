@@ -30,7 +30,7 @@ export function GameFrame({ total, onBack, onFinish, delay = 1800, children }: P
     const next = () => {
       const talking = window.speechSynthesis?.speaking || window.speechSynthesis?.pending
       if (talking && Date.now() - started < 12000) setTimeout(next, 200)
-      else setTimeout(() => setIndex((i) => i + 1), 400)
+      else setTimeout(() => setIndex((i) => i + 1), 1000)
     }
     setTimeout(next, delay)
   }, [delay])

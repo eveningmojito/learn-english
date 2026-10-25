@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { basicTopics, moreTopics, seasonalTopics, type Topic } from './data/words'
+import type { Topic } from './data/words'
 import { Learn } from './components/Learn'
 import { GameFrame } from './components/GameFrame'
 import { ChooseRound } from './components/ChooseRound'
@@ -8,59 +8,9 @@ import { BuildRound } from './components/BuildRound'
 import { MazeGame } from './components/MazeGame'
 import { Adventure } from './components/Adventure'
 import { stories, type Story } from './data/stories'
-import { advancedTopics } from './data/advanced'
+import { GAMES, LETTER_GAMES, LEVELS, type Extra, type GameId, type LevelId } from './data/levels'
 import { speak } from './audio'
-import { shuffle } from './utils'
-
-type GameId = 'listen' | 'read' | 'missing' | 'spell' | 'translate' | 'dictation' | 'sentence'
-type LevelId = '1' | '2' | '3'
-
-const GAMES: Record<GameId, { title: string; emoji: string; color: string; rounds: number }> = {
-  listen: { title: 'Ascolta e tocca', emoji: '🎧', color: '#2ecc71', rounds: 8 },
-  read: { title: 'Leggi e scegli', emoji: '👀', color: '#2ecc71', rounds: 8 },
-  missing: { title: 'Lettera mancante', emoji: '🔤', color: '#f39c12', rounds: 8 },
-  spell: { title: 'Scrivi la parola', emoji: '✍️', color: '#e84393', rounds: 6 },
-  translate: { title: 'Traduci', emoji: '🔁', color: '#2ecc71', rounds: 8 },
-  dictation: { title: 'Dettato', emoji: '👂', color: '#f39c12', rounds: 6 },
-  sentence: { title: 'Costruisci la frase', emoji: '🧩', color: '#e84393', rounds: 6 },
-}
-
-// Games where the child types the English word letter by letter need plain single words.
-const LETTER_GAMES: GameId[] = ['missing', 'spell', 'dictation']
-
-// Stand-alone games and stories shown in their own section of a level.
-type Extra = { id: string; title: string; emoji: string; color: string }
-
-const MAZE: Extra = { id: 'maze', title: 'Segui le indicazioni', emoji: '🐰', color: '#10ac84' }
-
-const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; sections: { title: string; topics: Topic[] }[]; games: GameId[]; extras?: { title: string; items: Extra[] } }> = {
-  '1': {
-    label: 'Livello 1–2',
-    sub: 'Ascolto e figure',
-    emoji: '🐣',
-    sections: [
-      { title: 'Argomenti', topics: basicTopics },
-      { title: 'Feste e stagioni', topics: seasonalTopics },
-    ],
-    games: ['listen'],
-  },
-  '2': {
-    label: 'Livello 3–4',
-    sub: 'Lettura e spelling',
-    emoji: '📚',
-    sections: [{ title: 'Argomenti', topics: [...basicTopics, ...moreTopics] }],
-    games: ['read', 'missing', 'spell'],
-    extras: { title: 'Giochi', items: [MAZE] },
-  },
-  '3': {
-    label: 'Livello 5–6',
-    sub: 'Dettato e frasi',
-    emoji: '🚀',
-    sections: [{ title: 'Argomenti', topics: advancedTopics }],
-    games: ['translate', 'dictation', 'sentence'],
-    extras: { title: 'Avventure', items: stories.map(({ id, title, emoji, color }) => ({ id: `story:${id}`, title, emoji, color })) },
-  },
-}
+import { load, pickFresh, save, shuffle } from './utils'
 
 type View =
   | { name: 'home' }
@@ -73,30 +23,13 @@ type View =
 const PROGRESS_KEY = 'learn-english-progress'
 const LEVEL_KEY = 'learn-english-level'
 
-function load<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? (JSON.parse(raw) as T) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-function save(key: string, value: unknown) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // storage unavailable: keep it for this visit only
-  }
-}
-
 const scoreKey = (topic: Topic, game: GameId) => `${topic.id}:${game}`
 
 function makeRounds(topic: Topic, game: GameId) {
   const words = topic.words
   const pool =
     game === 'sentence' ? (topic.sentences ?? []) : LETTER_GAMES.includes(game) ? words.filter((w) => /^[a-z]+$/.test(w.en)) : words
-  const targets = shuffle(pool).slice(0, Math.min(GAMES[game].rounds, pool.length))
+  const targets = pickFresh(`${topic.id}:${game}`, pool, GAMES[game].rounds, (w) => w.en)
   return targets.map((target) => ({
     target,
     options: shuffle([target, ...shuffle(words.filter((w) => w !== target)).slice(0, 3)]),

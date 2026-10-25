@@ -1,6 +1,7 @@
 import type { Topic } from './words'
+import { sentences } from './sentences'
 
-// Harder topics for level 5-6, each with words and short sentences.
+// Harder topics for level 5-6: words here, sentences in sentences.ts.
 export const advancedTopics: Topic[] = [
   {
     id: 'jobs',
@@ -18,14 +19,7 @@ export const advancedTopics: Topic[] = [
       { en: 'singer', it: 'cantante', emoji: '🧑‍🎤' },
       { en: 'mechanic', it: 'meccanico', emoji: '🧑‍🔧' },
     ],
-    sentences: [
-      { en: 'She is a doctor', it: 'Lei è un medico', emoji: '🧑‍⚕️' },
-      { en: 'My dad is a cook', it: 'Il mio papà è un cuoco', emoji: '🧑‍🍳' },
-      { en: 'I want to be an astronaut', it: "Voglio fare l'astronauta", emoji: '🧑‍🚀' },
-      { en: 'The farmer has a tractor', it: 'Il contadino ha un trattore', emoji: '🚜' },
-      { en: 'He is a brave firefighter', it: 'Lui è un pompiere coraggioso', emoji: '🧑‍🚒' },
-      { en: 'The pilot flies a plane', it: 'Il pilota guida un aereo', emoji: '✈️' },
-    ],
+    sentences: sentences.jobs,
   },
   {
     id: 'sports',
@@ -43,14 +37,7 @@ export const advancedTopics: Topic[] = [
       { en: 'running', it: 'corsa', emoji: '🏃' },
       { en: 'boxing', it: 'pugilato', emoji: '🥊' },
     ],
-    sentences: [
-      { en: 'I play football with my friends', it: 'Gioco a calcio con i miei amici', emoji: '⚽' },
-      { en: 'She likes swimming', it: 'A lei piace nuotare', emoji: '🏊' },
-      { en: 'We play tennis on Sunday', it: 'Giochiamo a tennis la domenica', emoji: '🎾' },
-      { en: 'He can ride a bike', it: 'Lui sa andare in bicicletta', emoji: '🚴' },
-      { en: 'They are running fast', it: 'Stanno correndo veloci', emoji: '🏃' },
-      { en: 'Basketball is my favourite sport', it: 'La pallacanestro è il mio sport preferito', emoji: '🏀' },
-    ],
+    sentences: sentences.sports,
   },
   {
     id: 'actions',
@@ -69,14 +56,7 @@ export const advancedTopics: Topic[] = [
       { en: 'laugh', it: 'ridere', emoji: '😂' },
       { en: 'swim', it: 'nuotare', emoji: '🏊' },
     ],
-    sentences: [
-      { en: 'I sleep at night', it: 'Dormo di notte', emoji: '😴' },
-      { en: 'We eat pasta for lunch', it: 'Mangiamo la pasta a pranzo', emoji: '🍝' },
-      { en: 'She can dance very well', it: 'Lei sa ballare molto bene', emoji: '💃' },
-      { en: 'I read a book every day', it: 'Leggo un libro ogni giorno', emoji: '📖' },
-      { en: 'Birds can fly', it: 'Gli uccelli sanno volare', emoji: '🐦' },
-      { en: 'My brother is laughing', it: 'Mio fratello sta ridendo', emoji: '😂' },
-    ],
+    sentences: sentences.actions,
   },
   {
     id: 'town',
@@ -95,14 +75,7 @@ export const advancedTopics: Topic[] = [
       { en: 'station', it: 'stazione', emoji: '🚉' },
       { en: 'cinema', it: 'cinema', emoji: '🎬' },
     ],
-    sentences: [
-      { en: 'The park is near my house', it: 'Il parco è vicino a casa mia', emoji: '🏞️' },
-      { en: 'I go to school by bus', it: 'Vado a scuola in autobus', emoji: '🚌' },
-      { en: 'The library has many books', it: 'La biblioteca ha molti libri', emoji: '📚' },
-      { en: 'We buy bread at the shop', it: 'Compriamo il pane al negozio', emoji: '🍞' },
-      { en: 'The train leaves the station', it: 'Il treno parte dalla stazione', emoji: '🚉' },
-      { en: 'My mum works at the hospital', it: "La mia mamma lavora all'ospedale", emoji: '🏥' },
-    ],
+    sentences: sentences.town,
   },
   {
     id: 'feelings',
@@ -120,14 +93,7 @@ export const advancedTopics: Topic[] = [
       { en: 'hungry', it: 'affamato', emoji: '🤤' },
       { en: 'sick', it: 'malato', emoji: '🤒' },
     ],
-    sentences: [
-      { en: 'I am very happy today', it: 'Oggi sono molto felice', emoji: '😀' },
-      { en: 'The boy is tired', it: 'Il ragazzo è stanco', emoji: '😫' },
-      { en: 'She is sad because it is raining', it: 'È triste perché piove', emoji: '🌧️' },
-      { en: 'My cat is scared of the dog', it: 'Il mio gatto ha paura del cane', emoji: '😨' },
-      { en: 'We are bored at home', it: 'Ci annoiamo a casa', emoji: '🥱' },
-      { en: 'He is angry with his sister', it: 'È arrabbiato con sua sorella', emoji: '😠' },
-    ],
+    sentences: sentences.feelings,
   },
   {
     id: 'transport',
@@ -146,13 +112,6 @@ export const advancedTopics: Topic[] = [
       { en: 'tractor', it: 'trattore', emoji: '🚜' },
       { en: 'rocket', it: 'razzo', emoji: '🚀' },
     ],
-    sentences: [
-      { en: 'The plane is in the sky', it: "L'aereo è nel cielo", emoji: '✈️' },
-      { en: 'My dad drives a red car', it: 'Il mio papà guida una macchina rossa', emoji: '🚗' },
-      { en: 'The ship is on the sea', it: 'La nave è sul mare', emoji: '🚢' },
-      { en: 'We take the train to Rome', it: 'Prendiamo il treno per Roma', emoji: '🚆' },
-      { en: 'The rocket goes to the moon', it: 'Il razzo va sulla luna', emoji: '🚀' },
-      { en: 'I ride my bicycle in the park', it: 'Vado in bicicletta al parco', emoji: '🚲' },
-    ],
+    sentences: sentences.transport,
   },
 ]

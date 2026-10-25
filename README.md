@@ -43,6 +43,20 @@ In ogni gioco si guadagna una stella per ogni risposta giusta al primo colpo; il
 - L'audio usa le voci del browser (Web Speech API), quindi non servono file audio.
 - È una PWA: dopo `npm run build` e `npm run preview` si può installare sul telefono e funziona anche offline.
 
-## Aggiungere parole
+## Aggiungere esercizi
 
-Modifica `src/data/words.ts` (livelli 1–2 e 3–4) o `src/data/advanced.ts` (livello 5–6, con le frasi): ogni argomento ha un elenco di parole con inglese, italiano ed emoji. Negli argomenti dei livelli 3–4 e 5–6 usa solo parole singole in minuscolo, così funzionano nei giochi di spelling.
+Tutti i contenuti stanno in `src/data/`, che fa da archivio degli esercizi: per aggiungerne non serve toccare il codice dei giochi.
+
+| File | Cosa contiene |
+| --- | --- |
+| `words.ts` | Argomenti e parole dei livelli 1–2 e 3–4 (inglese, italiano, emoji) |
+| `advanced.ts` | Argomenti e parole del livello 5–6 |
+| `sentences.ts` | Frasi di "Costruisci la frase", un elenco per argomento |
+| `stories.ts` | Storie delle Avventure: scene, dialoghi ed esercizi |
+| `levels.ts` | Quali argomenti, giochi e avventure compaiono in ogni livello |
+
+- **Nuove parole o frasi**: aggiungi una riga all'elenco giusto. Nei livelli 3–4 e 5–6 usa parole singole in minuscolo, così funzionano nei giochi di spelling; le frasi vanno senza punteggiatura.
+- **Nuovo argomento**: crealo in `words.ts` o `advanced.ts` e aggiungilo a una sezione in `levels.ts`.
+- **Nuova avventura**: copia una storia in `stories.ts` e aggiungila all'elenco `stories`; compare da sola nel livello 5–6. Gli sfondi disponibili sono in `src/components/Scenery.tsx`.
+
+Ogni partita sceglie parole e frasi diverse dalle ultime usate, finché non le ha proposte tutte (la memoria resta nel browser).
