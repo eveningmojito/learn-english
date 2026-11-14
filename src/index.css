@@ -407,3 +407,9 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 .avatar.on { border-color: #ffd32a; background: #fff3c4; }
 .big:disabled, .help:disabled { opacity: 0.5; }
 .help.danger { color: #c0392b; align-self: center; }
+.transfer-box { display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center; max-width: 520px; width: 100%; margin: 0 auto; font-size: 1.15rem; }
+.transfer-box p { margin: 0; }
+.qr { width: min(360px, 100%); height: auto; border-radius: 16px; box-shadow: var(--shadow); }
+.scanner { width: min(420px, 100%); aspect-ratio: 1; object-fit: cover; border-radius: 22px; background: #000; box-shadow: var(--shadow); }
+.transfer-question { font-size: 1.3rem; max-width: 480px; }
+.sync-error { color: #c0392b; }

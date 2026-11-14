@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { AVATARS, NAME_MAX, type Profile } from '../profiles'
 import { speak } from '../audio'
+import type { Copy } from '../transfer'
+import { ScanProfile, ShareProfile } from './Transfer'
 
 type PickerProps = {
   profiles: Profile[]
@@ -8,19 +10,34 @@ type PickerProps = {
   onCreate: (name: string, avatar: string) => void
   onEdit: (id: string, name: string, avatar: string) => void
   onDelete: (id: string) => void
+  onCopy: (copy: Copy) => void
 }
 
 // "Who is playing?": the first screen when the device has several kids, or none yet.
-export function ProfilePicker({ profiles, onPick, onCreate, onEdit, onDelete }: PickerProps) {
+export function ProfilePicker({ profiles, onPick, onCreate, onEdit, onDelete, onCopy }: PickerProps) {
   const [form, setForm] = useState<{ edit?: Profile } | null>(null)
   const [editing, setEditing] = useState(false)
+  const [share, setShare] = useState<Profile | null>(null)
+  const [scan, setScan] = useState(false)
 
+  if (share) return <ShareProfile profile={share} onBack={() => setShare(null)} />
+  if (scan)
+    return (
+      <ScanProfile
+        onBack={() => setScan(false)}
+        onFound={(copy) => {
+          setScan(false)
+          onCopy(copy)
+        }}
+      />
+    )
   if (form)
     return (
       <ProfileForm
         profile={form.edit}
         canCancel={profiles.length > 0}
         onCancel={() => setForm(null)}
+        onShare={form.edit ? () => setShare(form.edit!) : undefined}
         onDone={(name, avatar) => {
           if (form.edit) onEdit(form.edit.id, name, avatar)
           else onCreate(name, avatar)
@@ -66,6 +83,11 @@ export function ProfilePicker({ profiles, onPick, onCreate, onEdit, onDelete }: 
             {editing ? '✓ Fatto' : '✏️ Modifica'}
           </button>
         )}
+        {'mediaDevices' in navigator && (
+          <button className="help" onClick={() => setScan(true)}>
+            📷 Ricevi
+          </button>
+        )}
       </div>
     </div>
   )
@@ -77,12 +99,14 @@ function ProfileForm({
   onCancel,
   onDone,
   onDelete,
+  onShare,
 }: {
   profile?: Profile
   canCancel: boolean
   onCancel: () => void
   onDone: (name: string, avatar: string) => void
   onDelete?: () => void
+  onShare?: () => void
 }) {
   const [name, setName] = useState(profile?.name ?? '')
   const [avatar, setAvatar] = useState(profile?.avatar ?? AVATARS[0])
@@ -121,6 +145,11 @@ function ProfileForm({
       <button className="big" disabled={!ok} onClick={() => onDone(name, avatar)}>
         ✓ Fatto
       </button>
+      {onShare && (
+        <button className="help" onClick={onShare}>
+          📤 Copia su un altro dispositivo
+        </button>
+      )}
       {onDelete && (
         <button className="help danger" onClick={() => (confirm ? onDelete() : setConfirm(true))}>
           {confirm ? '⚠️ Tocca ancora per cancellare tutti i suoi progressi' : '🗑️ Cancella giocatore'}
