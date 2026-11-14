@@ -12,6 +12,7 @@ import { coinsFor, LEVEL_MULTIPLIER, loadWallet, saveWallet, type Wallet } from 
 import { stories, type Story } from './data/stories'
 import { GAMES, LETTER_GAMES, LEVELS, type Extra, type GameId, type LevelId } from './data/levels'
 import { speak } from './audio'
+import type { Profile } from './profiles'
 import { load, pickFresh, save, shuffle } from './utils'
 
 type View =
@@ -54,7 +55,7 @@ function GameScreen({ topic, game, multiplier, onBack, onFinish }: { topic: Topi
   )
 }
 
-export default function App() {
+export default function App({ player, onSwitchPlayer }: { player: Profile; onSwitchPlayer: () => void }) {
   // Screens form a stack mirrored in the browser history, so both the ⬅️ buttons and the
   // browser/phone back button return to the previous screen instead of leaving the app.
   const [stack, setStack] = useState<View[]>([{ name: 'home' }])
@@ -163,6 +164,9 @@ export default function App() {
 
   return (
     <div className="screen">
+      <button className="player-chip" onClick={onSwitchPlayer} aria-label="Cambia giocatore">
+        <span className="player-chip-avatar">{player.avatar}</span> {player.name} 🔁
+      </button>
       <h1 className="title" onClick={() => speak("Let's learn English!")}>
         🎈 Let's learn English!
       </h1>

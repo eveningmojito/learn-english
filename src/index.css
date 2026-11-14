@@ -347,3 +347,33 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 .quiz { background: var(--bg); border-radius: 24px; padding: 18px; width: min(420px, 100%); display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .quiz-emoji { font-size: 5rem; line-height: 1.1; }
 .quiz-q { margin: 0; font-size: 1.5rem; font-weight: 700; }
+
+/* Player profiles */
+.player-chip {
+  align-self: flex-end; display: flex; align-items: center; gap: 6px;
+  background: var(--card); box-shadow: var(--shadow); border-radius: 999px;
+  padding: 6px 16px 6px 8px; font-size: 1.1rem; font-weight: 700; max-width: 100%;
+}
+.player-chip-avatar { font-size: 1.8rem; line-height: 1; }
+.grid.profiles { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px; max-width: 640px; width: 100%; margin: 0 auto; }
+.profile {
+  position: relative; background: var(--card); box-shadow: var(--shadow); border-radius: 26px;
+  padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.profile.add { background: #fff3c4; }
+.profile.editing { animation: pulse 1.2s ease infinite; }
+.profile-avatar { font-size: 3.6rem; line-height: 1.1; }
+.profile-name { font-size: 1.3rem; font-weight: 700; overflow-wrap: anywhere; text-align: center; }
+.profile-edit { position: absolute; top: 6px; right: 10px; font-size: 1.2rem; }
+.profile-tools { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.profile-preview { font-size: 5rem; text-align: center; line-height: 1.1; }
+.profile-field { display: flex; flex-direction: column; gap: 6px; width: min(420px, 100%); margin: 0 auto; color: var(--muted); }
+.profile-field input {
+  font: inherit; font-size: 1.5rem; padding: 10px 16px; border-radius: 16px;
+  border: 3px solid #ffd32a; background: var(--card); color: var(--text); width: 100%;
+}
+.grid.avatars { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; max-width: 520px; width: 100%; margin: 0 auto; }
+.avatar { font-size: 2.4rem; padding: 6px; border-radius: 18px; background: var(--card); box-shadow: var(--shadow); border: 3px solid transparent; }
+.avatar.on { border-color: #ffd32a; background: #fff3c4; }
+.big:disabled, .help:disabled { opacity: 0.5; }
+.help.danger { color: #c0392b; align-self: center; }

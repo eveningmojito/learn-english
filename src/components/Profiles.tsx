@@ -1,0 +1,131 @@
+import { useState } from 'react'
+import { AVATARS, NAME_MAX, type Profile } from '../profiles'
+import { speak } from '../audio'
+
+type PickerProps = {
+  profiles: Profile[]
+  onPick: (id: string) => void
+  onCreate: (name: string, avatar: string) => void
+  onEdit: (id: string, name: string, avatar: string) => void
+  onDelete: (id: string) => void
+}
+
+// "Who is playing?": the first screen when the device has several kids, or none yet.
+export function ProfilePicker({ profiles, onPick, onCreate, onEdit, onDelete }: PickerProps) {
+  const [form, setForm] = useState<{ edit?: Profile } | null>(null)
+  const [editing, setEditing] = useState(false)
+
+  if (form)
+    return (
+      <ProfileForm
+        profile={form.edit}
+        canCancel={profiles.length > 0}
+        onCancel={() => setForm(null)}
+        onDone={(name, avatar) => {
+          if (form.edit) onEdit(form.edit.id, name, avatar)
+          else onCreate(name, avatar)
+          setForm(null)
+          setEditing(false)
+        }}
+        onDelete={
+          form.edit
+            ? () => {
+                onDelete(form.edit!.id)
+                setForm(null)
+              }
+            : undefined
+        }
+      />
+    )
+
+  return (
+    <div className="screen">
+      <h1 className="title" onClick={() => speak('Who is playing?')}>
+        👋 Chi gioca?
+      </h1>
+      <div className="grid profiles">
+        {profiles.map((p) => (
+          <button
+            key={p.id}
+            className={`profile ${editing ? 'editing' : ''}`}
+            onClick={() => (editing ? setForm({ edit: p }) : onPick(p.id))}
+          >
+            <span className="profile-avatar">{p.avatar}</span>
+            <span className="profile-name">{p.name}</span>
+            {editing && <span className="profile-edit">✏️</span>}
+          </button>
+        ))}
+        <button className="profile add" onClick={() => setForm({})} aria-label="Nuovo giocatore">
+          <span className="profile-avatar">➕</span>
+          <span className="profile-name">Nuovo</span>
+        </button>
+      </div>
+      <div className="profile-tools">
+        {profiles.length > 0 && (
+          <button className="help" onClick={() => setEditing(!editing)}>
+            {editing ? '✓ Fatto' : '✏️ Modifica'}
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function ProfileForm({
+  profile,
+  canCancel,
+  onCancel,
+  onDone,
+  onDelete,
+}: {
+  profile?: Profile
+  canCancel: boolean
+  onCancel: () => void
+  onDone: (name: string, avatar: string) => void
+  onDelete?: () => void
+}) {
+  const [name, setName] = useState(profile?.name ?? '')
+  const [avatar, setAvatar] = useState(profile?.avatar ?? AVATARS[0])
+  const [confirm, setConfirm] = useState(false)
+  const ok = name.trim().length > 0
+  return (
+    <div className="screen">
+      <header className="topbar">
+        {canCancel ? (
+          <button className="round" onClick={onCancel} aria-label="Indietro">⬅️</button>
+        ) : (
+          <span />
+        )}
+        <h2>{profile ? 'Modifica' : 'Nuovo giocatore'}</h2>
+        <span />
+      </header>
+      <div className="profile-preview">{avatar}</div>
+      <label className="profile-field">
+        <span>Come ti chiami? (solo il nome o un soprannome)</span>
+        <input
+          value={name}
+          maxLength={NAME_MAX}
+          autoComplete="off"
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && ok && onDone(name, avatar)}
+          placeholder="Nome"
+        />
+      </label>
+      <div className="grid avatars" role="radiogroup" aria-label="Animale">
+        {AVATARS.map((a) => (
+          <button key={a} role="radio" aria-checked={a === avatar} className={`avatar ${a === avatar ? 'on' : ''}`} onClick={() => setAvatar(a)}>
+            {a}
+          </button>
+        ))}
+      </div>
+      <button className="big" disabled={!ok} onClick={() => onDone(name, avatar)}>
+        ✓ Fatto
+      </button>
+      {onDelete && (
+        <button className="help danger" onClick={() => (confirm ? onDelete() : setConfirm(true))}>
+          {confirm ? '⚠️ Tocca ancora per cancellare tutti i suoi progressi' : '🗑️ Cancella giocatore'}
+        </button>
+      )}
+    </div>
+  )
+}

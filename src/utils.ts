@@ -8,9 +8,21 @@ export function shuffle<T>(items: T[]): T[] {
 }
 
 // Saved settings and progress live in localStorage; if it is unavailable they last for this visit only.
+// Each kid's data is kept apart: while a profile is active, keys get that profile's id appended
+// (see profiles.ts). Keys starting with `learn-english-app-` are shared by the whole device.
+let scope = ''
+let onChange: ((scope: string) => void) | undefined
+export function setScope(profileId: string) {
+  scope = profileId
+}
+export function onSaved(listener: (scope: string) => void) {
+  onChange = listener
+}
+export const scopedKey = (key: string, id = scope) => (id && !key.startsWith('learn-english-app-') ? `${key}@${id}` : key)
+
 export function load<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(key)
+    const raw = localStorage.getItem(scopedKey(key))
     return raw ? (JSON.parse(raw) as T) : fallback
   } catch {
     return fallback
@@ -19,10 +31,11 @@ export function load<T>(key: string, fallback: T): T {
 
 export function save(key: string, value: unknown) {
   try {
-    localStorage.setItem(key, JSON.stringify(value))
+    localStorage.setItem(scopedKey(key), JSON.stringify(value))
   } catch {
     // storage unavailable: keep it for this visit only
   }
+  if (scope) onChange?.(scope)
 }
 
 const SEEN_KEY = 'learn-english-seen'
