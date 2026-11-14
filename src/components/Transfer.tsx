@@ -36,7 +36,7 @@ export function ShareProfile({ profile, onBack }: { profile: Profile; onBack: ()
         <p>
           Sull’altro dispositivo inquadra questo codice con la <b>fotocamera</b>, oppure apri l’app e tocca <b>📷 Ricevi</b>.
         </p>
-        <p className="hint">Si copiano livello, stelle, monete e casa. I progressi fatti dopo non si aggiornano da soli: per portarli di nuovo, rifai la copia.</p>
+        <p className="hint">Si copiano livello, stelle, monete, casa e frigo. I progressi fatti dopo non si aggiornano da soli: per portarli di nuovo, rifai la copia.</p>
       </div>
     </div>
   )

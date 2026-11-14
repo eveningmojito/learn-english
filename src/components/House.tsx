@@ -16,6 +16,7 @@ import {
   type ShopItem,
 } from '../data/shop'
 import type { Wallet } from '../rewards'
+import { Fridge } from './Fridge'
 
 // The child's own house: coins earned in the games buy squares, floors, rooms and things to
 // put inside. Every purchase is a small English quiz, and a bear gives missions in English.
@@ -214,6 +215,8 @@ export function House({ wallet, onWallet, onBack }: Props) {
           </div>
         </div>
       )}
+
+      <Fridge />
 
       <div className="house" style={{ ['--w' as string]: house.width }}>
         <div className="roof" />

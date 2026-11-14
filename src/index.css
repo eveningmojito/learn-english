@@ -434,3 +434,105 @@ h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2rem); }
 @keyframes finish-swim { 0% { translate: 0 0; } 25% { translate: -20px -8px; } 50% { translate: -40px 8px; } 100% { translate: -260px 0; } }
 @keyframes finish-rock { 25% { rotate: -6deg; } 75% { rotate: 6deg; } }
 @keyframes finish-jump { 50% { translate: 0 -24px; scale: 1.05; } }
+
+/* Cooking game (level 3-4) */
+.kitchen { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 640px; margin: 0 auto; }
+.cook-say { display: flex; align-items: center; gap: 8px; width: 100%; }
+.cook-say-text {
+  flex: 1; background: #fff3c4; border-radius: 18px; padding: 8px 14px; box-shadow: var(--shadow);
+  text-align: left; font-size: clamp(1.2rem, 5vw, 1.6rem); font-weight: 700; display: flex; flex-direction: column; line-height: 1.25;
+}
+.cook-hint { font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+.cook-title { background: var(--card); border-radius: 18px; padding: 10px 16px; box-shadow: var(--shadow); font-size: clamp(1.3rem, 5vw, 1.7rem); font-weight: 700; display: flex; flex-direction: column; }
+.work {
+  position: relative; width: min(300px, 74vw, 36dvh); aspect-ratio: 1; background: #fff; border-radius: 28px;
+  box-shadow: var(--shadow); touch-action: none; padding: 0; flex-shrink: 0;
+}
+.work.small { width: min(200px, 50vw, 26dvh); }
+.work.target { outline: 4px dashed #ffd32a; outline-offset: -10px; }
+.work.rub { cursor: none; }
+.dish { width: 100%; height: 100%; display: block; overflow: visible; }
+.dish.mini { width: 100%; height: auto; pointer-events: none; }
+.counter { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 92px; width: 100%; background: #f3e3c3; border-radius: 22px; padding: 10px; }
+.counter.empty { min-height: 0; padding: 4px; background: none; }
+.counter-item, .palette-item {
+  background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 6px 10px;
+  display: flex; flex-direction: column; align-items: center; min-width: 74px;
+}
+.counter-label { font-size: 1rem; font-weight: 700; line-height: 1.1; }
+.ing { font-size: 2.6rem; line-height: 1.1; display: inline-flex; align-items: center; justify-content: center; position: relative; }
+.ing.bag {
+  width: 2.6rem; height: 3rem; border-radius: 10px 10px 14px 14px; border: 3px solid #c8a978;
+  font-size: 1.6rem; box-shadow: inset 0 6px 0 rgba(0,0,0,.08); clip-path: polygon(0 12%, 20% 0, 40% 10%, 60% 0, 80% 10%, 100% 0, 100% 100%, 0 100%);
+}
+.ing.halves { width: 1.4em; height: 1.15em; }
+.ing.halves > span { position: absolute; left: 0.2em; }
+.ing.halves > span:first-child { clip-path: inset(0 52% 0 0); transform: translateX(-0.12em) rotate(-10deg); }
+.ing.halves > span:last-child { clip-path: inset(0 0 0 52%); transform: translateX(0.12em) rotate(10deg); }
+.pantry { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; width: 100%; }
+.pantry-item { padding: 10px 6px; min-height: 92px; justify-content: center; }
+.pantry-item.taken { visibility: hidden; }
+.pantry-item.chosen { background: #d4f8d4; outline: 4px solid #2ecc71; }
+.drag { touch-action: none; cursor: grab; transition: transform 0.25s ease; position: relative; }
+.drag.dragging { transition: none; z-index: 40; cursor: grabbing; filter: drop-shadow(0 8px 6px rgba(0,0,0,.25)); }
+.carry { width: min(140px, 36vw); background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 8px; }
+.rack { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: min(480px, 100%); }
+.rack-item { aspect-ratio: 1; padding: 6px; justify-content: center; }
+.tool-icon { width: 100%; height: 100%; }
+.hand { position: absolute; width: 34%; translate: -30% -70%; pointer-events: none; filter: drop-shadow(0 6px 4px rgba(0,0,0,.25)); }
+.hand.idle { left: 60%; top: 45%; animation: wiggle 1.4s ease-in-out infinite; }
+@keyframes wiggle { 50% { translate: -10% -80%; rotate: 10deg; } }
+.meter { width: min(300px, 74vw); height: 14px; border-radius: 999px; background: #e5e1d8; overflow: hidden; }
+.meter > span { display: block; height: 100%; background: #2ecc71; transition: width 0.2s; }
+.chop-target { cursor: pointer; }
+.chop-board { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; background: #e2b47a; border-radius: 24px; padding: 18px; box-shadow: var(--shadow); width: min(480px, 100%); }
+.chop-item { position: relative; background: #f3d3a3; border-radius: 18px; padding: 10px 14px; display: flex; flex-direction: column; align-items: center; }
+.chop-item .ing { font-size: 3.4rem; }
+.knife-hit { position: absolute; width: 46px; right: -6px; top: -14px; pointer-events: none; animation: chop 0.35s ease; }
+.chop-target .knife-hit { width: 30%; right: 10%; top: 4%; }
+@keyframes chop { 0% { translate: 0 -16px; rotate: -20deg; } 60% { translate: 0 6px; rotate: 0deg; } 100% { translate: 0 0; } }
+.stir { animation: stir 0.6s linear infinite; transform-origin: 100px 85px; }
+.spin { animation: stir 0.3s linear infinite; }
+.flip { animation: flip 0.7s ease; }
+@keyframes stir { to { rotate: 360deg; } }
+@keyframes flip { 50% { scale: 1 0.05; translate: 0 -30px; } }
+.devices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(520px, 100%); }
+.device-choice { background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 8px; }
+.device-icon { width: 100%; height: auto; display: block; }
+.device-big { position: relative; width: min(300px, 74vw, 38dvh); aspect-ratio: 1; }
+.device-big .device-art { width: 100%; height: 100%; }
+.device-big.cooking .device-art { animation: pulse 0.7s ease-in-out infinite; }
+.in-device { position: absolute; }
+.power {
+  position: absolute; translate: -50% -50%; width: 64px; height: 64px; border-radius: 50%;
+  background: #2ecc71; color: #fff; font-weight: 700; font-size: 1.3rem; box-shadow: var(--shadow); animation: pulse 1s ease-in-out infinite;
+}
+.steam { position: absolute; top: -12%; left: 50%; font-size: 2.6rem; animation: float-up 1.4s ease-in infinite; }
+.palette { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; width: 100%; }
+.swatch { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 8px 12px; display: flex; flex-direction: column; align-items: center; border: 4px solid transparent; }
+.swatch.on { border-color: #2ecc71; }
+.swatch-dot { width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(0,0,0,.15); }
+.cook-actions { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.cook-actions .help { margin-top: 0; }
+.done-button { background: #2ecc71; color: #fff; font-size: 1.5rem; padding: 10px 26px; }
+.fridge-drop { position: relative; width: min(170px, 42vw, 26dvh); }
+.fridge-art { width: 100%; height: auto; display: block; }
+.fridge-stored { position: absolute; left: 50%; top: 40%; translate: -50% -50%; font-size: 3rem; }
+
+/* The fridge in the house */
+.fridge-button {
+  display: flex; align-items: center; gap: 12px; width: min(640px, 100%); margin: 0 auto;
+  background: #dff3fb; border-radius: 22px; padding: 8px 16px; box-shadow: var(--shadow); text-align: left;
+}
+.fridge-button > span { display: flex; flex-direction: column; }
+.fridge-mini { width: 40px; height: auto; flex-shrink: 0; }
+.fridge-sub { font-size: 0.95rem; color: var(--muted); }
+.fridge-open {
+  background: #eaf6fc; border-radius: 28px; padding: 16px; width: min(560px, 94vw); max-height: 90dvh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px; align-items: center; border: 6px solid #8fb9d1;
+}
+.fridge-shelves { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; width: 100%; }
+.fridge-dish { background: #fff; border-radius: 20px; box-shadow: var(--shadow); padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.fridge-dish-view { background: none; display: flex; flex-direction: column; align-items: center; padding: 0; width: 100%; }
+.fridge-name { font-size: 1rem; font-weight: 700; text-align: center; line-height: 1.2; }
+.help.eat { margin-top: 0; padding: 4px 14px; font-size: 1rem; }

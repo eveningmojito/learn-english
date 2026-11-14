@@ -79,3 +79,38 @@ export function playWheelStop() {
   tone(1320, 0.08, 0.2, 'sine', 0.12)
   navigator.vibrate?.(40)
 }
+
+// Kitchen sounds for the cooking game.
+export function playChop() {
+  tone(260, 0, 0.06, 'square', 0.12)
+  tone(130, 0.02, 0.08, 'triangle', 0.15)
+}
+
+export function playPop() {
+  tone(500, 0, 0.08, 'sine', 0.2)
+  tone(900, 0.05, 0.1, 'sine', 0.15)
+}
+
+export function playSwish() {
+  tone(700 + Math.random() * 300, 0, 0.05, 'triangle', 0.04)
+}
+
+export function playBubble() {
+  tone(300 + Math.random() * 200, 0, 0.09, 'sine', 0.08)
+}
+
+export function playDing() {
+  tone(1568, 0, 0.6, 'sine', 0.2)
+  tone(2093, 0.02, 0.8, 'sine', 0.12)
+}
+
+// Runs fn once the voice is free, so a new sentence never cuts off the previous one.
+export function whenQuiet(fn: () => void, timers: number[], wait = 0) {
+  const started = Date.now()
+  const tick = () => {
+    const talking = window.speechSynthesis?.speaking || window.speechSynthesis?.pending
+    if (talking && Date.now() - started < 8000) timers.push(window.setTimeout(tick, 150))
+    else fn()
+  }
+  timers.push(window.setTimeout(tick, wait))
+}

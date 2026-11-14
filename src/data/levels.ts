@@ -26,6 +26,7 @@ export type Extra = { id: string; title: string; emoji: string; color: string }
 
 const MAZE: Extra = { id: 'maze', title: 'Segui le indicazioni', emoji: '🐰', color: '#10ac84' }
 const SHAPES: Extra = { id: 'shapes', title: 'Costruisci con le forme', emoji: '🔺', color: '#ff9f43' }
+const COOKING: Extra = { id: 'cooking', title: 'In cucina', emoji: '🍳', color: '#ee5253' }
 const WHEEL: Extra = { id: 'wheel', title: 'Ruota della fortuna', emoji: '🎡', color: '#e84393' }
 
 export const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; sections: { title: string; topics: Topic[] }[]; games: GameId[]; extras?: { title: string; items: Extra[] } }> = {
@@ -46,7 +47,7 @@ export const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string
     emoji: '📚',
     sections: [{ title: 'Argomenti', topics: [...basicTopics, ...moreTopics] }],
     games: ['read', 'missing', 'spell'],
-    extras: { title: 'Giochi', items: [MAZE] },
+    extras: { title: 'Giochi', items: [MAZE, COOKING] },
   },
   '3': {
     label: 'Livello 5–6',
