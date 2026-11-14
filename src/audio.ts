@@ -38,14 +38,14 @@ export function speak(text: string, lang: 'en' | 'it' = 'en', pitch = 1.1) {
 
 let ctx: AudioContext | null = null
 
-function tone(freq: number, start: number, duration: number, type: OscillatorType = 'sine') {
+function tone(freq: number, start: number, duration: number, type: OscillatorType = 'sine', volume = 0.25) {
   ctx ??= new AudioContext()
   const osc = ctx.createOscillator()
   const gain = ctx.createGain()
   osc.type = type
   osc.frequency.value = freq
   const t = ctx.currentTime + start
-  gain.gain.setValueAtTime(0.25, t)
+  gain.gain.setValueAtTime(volume, t)
   gain.gain.exponentialRampToValueAtTime(0.001, t + duration)
   osc.connect(gain).connect(ctx.destination)
   osc.start(t)
@@ -65,4 +65,17 @@ export function playWrong() {
 
 export function playFanfare() {
   ;[523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.25))
+}
+
+// A soft click for each slice of the wheel passing the pointer, with a tiny buzz on phones
+// that support vibration (Android; iPhones ignore it).
+export function playTick() {
+  tone(1400, 0, 0.035, 'triangle', 0.06)
+  navigator.vibrate?.(6)
+}
+
+export function playWheelStop() {
+  tone(880, 0, 0.12, 'sine', 0.15)
+  tone(1320, 0.08, 0.2, 'sine', 0.12)
+  navigator.vibrate?.(40)
 }

@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Word } from '../data/words'
 import { sentences } from '../data/sentences'
 import { VOWEL_PRICE, WHEEL_CATEGORIES, WHEEL_ROUNDS, WHEEL_SLICES } from '../data/wheel'
-import { playCorrect, playWrong, speak } from '../audio'
+import { playCorrect, playTick, playWheelStop, playWrong, speak } from '../audio'
 import { pickFresh, shuffle } from '../utils'
 import { GameFrame } from './GameFrame'
 import { LEVEL_MULTIPLIER } from '../rewards'
@@ -21,7 +21,38 @@ const COLORS = ['#ff6b6b', '#feca57', '#48dbfb', '#1dd1a1', '#ff9ff3', '#54a0ff'
 
 const isLetter = (ch: string) => /[A-Z]/.test(ch)
 
+// Points along the wheel's CSS easing curve, cubic-bezier(0.15, 0.85, 0.25, 1), as
+// [share of the time, share of the turn], to know when each slice passes the pointer.
+const EASING = Array.from({ length: 201 }, (_, i) => {
+  const t = i / 200
+  const bez = (a: number, b: number) => 3 * a * t * (1 - t) ** 2 + 3 * b * t ** 2 * (1 - t) + t ** 3
+  return [bez(0.15, 0.25), bez(0.85, 1)]
+})
+const SPIN_MS = 3000
+
 function Wheel({ angle }: { angle: number }) {
+  const previous = useRef(angle)
+
+  // While the wheel turns, click once for every slice that passes the pointer, so the clicks
+  // slow down together with the wheel.
+  useEffect(() => {
+    const from = previous.current
+    previous.current = angle
+    if (angle === from) return
+    const timers: number[] = []
+    // At full speed slices pass too fast to hear each one, so keep clicks at least 70ms apart.
+    let lastMs = -Infinity
+    for (let a = (Math.floor(from / SLICE) + 1) * SLICE; a < angle; a += SLICE) {
+      const share = (a - from) / (angle - from)
+      const ms = (EASING.find(([, y]) => y >= share) ?? EASING[EASING.length - 1])[0] * SPIN_MS
+      if (ms - lastMs < 70) continue
+      lastMs = ms
+      timers.push(window.setTimeout(playTick, ms))
+    }
+    timers.push(window.setTimeout(playWheelStop, SPIN_MS))
+    return () => timers.forEach(clearTimeout)
+  }, [angle])
+
   const r = 100
   const point = (deg: number) => {
     const rad = ((deg - 90) * Math.PI) / 180
