@@ -37,7 +37,17 @@ export function ProfilePicker({ profiles, onPick, onCreate, onEdit, onDelete, on
         profile={form.edit}
         canCancel={profiles.length > 0}
         onCancel={() => setForm(null)}
-        onShare={form.edit ? () => setShare(form.edit!) : undefined}
+        onShare={
+          form.edit
+            ? (name, avatar) => {
+                // Save the name and animal chosen on this screen first, so the copy carries them.
+                onEdit(form.edit!.id, name, avatar)
+                setForm(null)
+                setEditing(false)
+                setShare({ ...form.edit!, name: name.trim(), avatar })
+              }
+            : undefined
+        }
         onDone={(name, avatar) => {
           if (form.edit) onEdit(form.edit.id, name, avatar)
           else onCreate(name, avatar)
@@ -106,7 +116,7 @@ function ProfileForm({
   onCancel: () => void
   onDone: (name: string, avatar: string) => void
   onDelete?: () => void
-  onShare?: () => void
+  onShare?: (name: string, avatar: string) => void
 }) {
   const [name, setName] = useState(profile?.name ?? '')
   const [avatar, setAvatar] = useState(profile?.avatar ?? AVATARS[0])
@@ -146,7 +156,7 @@ function ProfileForm({
         ✓ Fatto
       </button>
       {onShare && (
-        <button className="help" onClick={onShare}>
+        <button className="help" disabled={!ok} onClick={() => onShare(name, avatar)}>
           📤 Copia su un altro dispositivo
         </button>
       )}
