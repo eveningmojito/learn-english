@@ -7,6 +7,7 @@ import { MissingLetterRound } from './components/MissingLetterRound'
 import { BuildRound } from './components/BuildRound'
 import { MazeGame } from './components/MazeGame'
 import { WheelGame } from './components/WheelGame'
+import { ShapesGame } from './components/ShapesGame'
 import { Adventure } from './components/Adventure'
 import { House } from './components/House'
 import { coinsFor, LEVEL_MULTIPLIER, loadWallet, saveWallet, type Wallet } from './rewards'
@@ -23,6 +24,7 @@ type View =
   | { name: 'game'; topic: Topic; game: GameId }
   | { name: 'maze' }
   | { name: 'wheel' }
+  | { name: 'shapes' }
   | { name: 'story'; story: Story }
   | { name: 'house' }
 
@@ -111,6 +113,7 @@ export default function App({ player, onSwitchPlayer }: { player: Profile; onSwi
   function openExtra(x: Extra) {
     if (x.id === 'maze') return setView({ name: 'maze' })
     if (x.id === 'wheel') return setView({ name: 'wheel' })
+    if (x.id === 'shapes') return setView({ name: 'shapes' })
     const story = stories.find((s) => `story:${s.id}` === x.id)
     if (story) setView({ name: 'story', story })
   }
@@ -119,6 +122,7 @@ export default function App({ player, onSwitchPlayer }: { player: Profile; onSwi
 
   if (view.name === 'house') return <House wallet={wallet} onWallet={changeWallet} onBack={back} />
   if (view.name === 'wheel') return <WheelGame onBack={back} onFinish={(s) => finishGame('game:wheel', s, LEVEL_MULTIPLIER['3'])} />
+  if (view.name === 'shapes') return <ShapesGame onBack={back} onFinish={(s) => finishGame('game:shapes', s, LEVEL_MULTIPLIER['1'])} />
   if (view.name === 'maze') return <MazeGame onBack={back} onFinish={(s) => finishGame('game:maze', s, LEVEL_MULTIPLIER['2'])} />
   if (view.name === 'story') {
     const { story } = view

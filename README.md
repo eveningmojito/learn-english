@@ -25,6 +25,7 @@ Nella schermata iniziale si sceglie il livello (la scelta resta salvata).
 - Feste e stagioni: autunno, Halloween, inverno, Natale, Carnevale, primavera, Pasqua, estate, compleanno.
 - **Impara**: tocca una carta per sentire la parola in inglese (con traduzione italiana).
 - **Ascolta e tocca**: ascolta la parola e tocca l'immagine giusta.
+- **Costruisci con le forme** (gioco): un disegno (casa, razzo, macchina, pesce…) aspetta i suoi pezzi grigi. Si sente "Find the triangle!" e si tocca la forma giusta, che va al suo posto. Quando il disegno è finito prende vita (il razzo parte, la macchina se ne va). Forme: circle, square, triangle, rectangle, star, heart, oval, diamond. Una stella per ogni disegno costruito senza errori.
 
 **Livello 3–4: lettura e spelling**
 - Argomenti del livello 1–2 più il corpo, i vestiti, la scuola, il tempo e la casa.
