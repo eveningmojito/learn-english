@@ -61,6 +61,7 @@ Tutti i contenuti stanno in `src/data/`, che fa da archivio degli esercizi: per 
 | `sentences.ts` | Frasi di "Costruisci la frase", un elenco per argomento |
 | `stories.ts` | Storie delle Avventure: scene, dialoghi ed esercizi |
 | `levels.ts` | Quali argomenti, giochi e avventure compaiono in ogni livello |
+| `wheel.ts` | Spicchi della Ruota della fortuna, prezzo delle vocali, categorie |
 | `shop.ts` | Stanze, mobili, oggetti e animali della casa, con prezzi |
 
 - **Nuove parole o frasi**: aggiungi una riga all'elenco giusto. Nei livelli 3–4 e 5–6 usa parole singole in minuscolo, così funzionano nei giochi di spelling; le frasi vanno senza punteggiatura.

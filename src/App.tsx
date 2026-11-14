@@ -6,6 +6,7 @@ import { ChooseRound } from './components/ChooseRound'
 import { MissingLetterRound } from './components/MissingLetterRound'
 import { BuildRound } from './components/BuildRound'
 import { MazeGame } from './components/MazeGame'
+import { WheelGame } from './components/WheelGame'
 import { Adventure } from './components/Adventure'
 import { House } from './components/House'
 import { coinsFor, LEVEL_MULTIPLIER, loadWallet, saveWallet, type Wallet } from './rewards'
@@ -20,6 +21,7 @@ type View =
   | { name: 'learn'; topic: Topic }
   | { name: 'game'; topic: Topic; game: GameId }
   | { name: 'maze' }
+  | { name: 'wheel' }
   | { name: 'story'; story: Story }
   | { name: 'house' }
 
@@ -107,6 +109,7 @@ export default function App() {
   const extraKey = (x: Extra) => `game:${x.id}`
   function openExtra(x: Extra) {
     if (x.id === 'maze') return setView({ name: 'maze' })
+    if (x.id === 'wheel') return setView({ name: 'wheel' })
     const story = stories.find((s) => `story:${s.id}` === x.id)
     if (story) setView({ name: 'story', story })
   }
@@ -114,6 +117,7 @@ export default function App() {
   const topicStars = (topic: Topic) => levelInfo.games.reduce((sum, g) => sum + (best[scoreKey(topic, g)] ?? 0), 0)
 
   if (view.name === 'house') return <House wallet={wallet} onWallet={changeWallet} onBack={back} />
+  if (view.name === 'wheel') return <WheelGame onBack={back} onFinish={(s) => finishGame('game:wheel', s, LEVEL_MULTIPLIER['3'])} />
   if (view.name === 'maze') return <MazeGame onBack={back} onFinish={(s) => finishGame('game:maze', s, LEVEL_MULTIPLIER['2'])} />
   if (view.name === 'story') {
     const { story } = view

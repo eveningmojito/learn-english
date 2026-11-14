@@ -25,6 +25,7 @@ export const LETTER_GAMES: GameId[] = ['missing', 'spell', 'dictation']
 export type Extra = { id: string; title: string; emoji: string; color: string }
 
 const MAZE: Extra = { id: 'maze', title: 'Segui le indicazioni', emoji: '🐰', color: '#10ac84' }
+const WHEEL: Extra = { id: 'wheel', title: 'Ruota della fortuna', emoji: '🎡', color: '#e84393' }
 
 export const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string; sections: { title: string; topics: Topic[] }[]; games: GameId[]; extras?: { title: string; items: Extra[] } }> = {
   '1': {
@@ -51,6 +52,6 @@ export const LEVELS: Record<LevelId, { label: string; sub: string; emoji: string
     emoji: '🚀',
     sections: [{ title: 'Argomenti', topics: advancedTopics }],
     games: ['translate', 'dictation', 'sentence'],
-    extras: { title: 'Avventure', items: stories.map(({ id, title, emoji, color }) => ({ id: `story:${id}`, title, emoji, color })) },
+    extras: { title: 'Giochi e avventure', items: [WHEEL, ...stories.map(({ id, title, emoji, color }) => ({ id: `story:${id}`, title, emoji, color }))] },
   },
 }
